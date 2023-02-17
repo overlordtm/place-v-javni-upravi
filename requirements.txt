@@ -1,0 +1,2 @@
+frictionless~=5.6.3
+git+https://github.com/overlordtm/pju.git@main#egg=pju
