@@ -15,7 +15,7 @@ def fetch_payout_types() -> pd.DataFrame:
 
     df = pd.DataFrame()
     r = http.request('GET', f'{BASE_URL}/tipimesec.txt')
-    df = pd.DataFrame(json.loads(r.data.decode('iso-8859-2'))['aaData'], columns=COLS)
+    df = pd.DataFrame(json.loads(r.data)['aaData'], columns=COLS)
 
     df[['Mesec', 'Leto']] = df['Datum'].str.split('.', expand=True)
     df.drop('Datum', axis=1, inplace=True)
