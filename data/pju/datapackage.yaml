@@ -1,0 +1,44 @@
+resources:
+  - name: payout_types
+    type: table
+    path: data/pju/data/payout_types.csv
+    scheme: file
+    format: csv
+    encoding: utf-8
+    mediatype: text/csv
+    schema:
+      fields:
+        - name: month_year
+          type: yearmonth
+        - name: employees_by_hours
+          type: number
+        - name: employees
+          type: number
+        - name: employees_all
+          type: number
+        - name: A
+          type: string
+        - name: B
+          type: string
+        - name: C
+          type: string
+        - name: D
+          type: string
+        - name: E
+          type: string
+        - name: F
+          type: number
+        - name: G
+          type: string
+        - name: H
+          type: string
+        - name: I
+          type: string
+        - name: J
+          type: string
+        - name: L
+          type: number
+        - name: N
+          type: number
+        - name: O
+          type: string
