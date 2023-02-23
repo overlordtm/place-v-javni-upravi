@@ -1,5 +1,0 @@
-resources:
-  - path: data/pju/data/by_type.csv
-  - path: data/pju/data/by_budget_user_group.csv
-  - path: data/pju/data/by_budget_user.csv
-  - path: data/pju/data/by_job_title.csv
