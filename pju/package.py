@@ -20,19 +20,22 @@ def package_data(year: int, month: int = None):
             }
         ],
     }
-
+    package = Package()
 
     df = pju.fetch.fetch_payouts()
+    df.to_csv('data/pju/data/by_type.csv')
+    package.add_resource(Resource(path='data/pju/data/by_type.csv'))
 
-    df.to_csv('data/pju/data/payout_types.csv')
+    df = pju.fetch.fetch_payout_by_budget_user_group(2020, 1)
+    df.to_csv('data/pju/data/by_budget_user_group.csv')
+    package.add_resource(Resource(path='data/pju/data/by_budget_user_group.csv'))
 
-    resource = Resource(path='data/pju/data/payout_types.csv')
+    df = pju.fetch.fetch_payout_by_budget_user(2020, 1)
+    df.to_csv('data/pju/data/by_budget_user.csv')
+    package.add_resource(Resource(path='data/pju/data/by_budget_user.csv'))
 
-    # infer metadata from resource and add it to the package
-    resource.infer()
-
-
-    package = Package()
-    package.add_resource(resource)
+    df = pju.fetch.fetch_payouts_job_title(2020, 1)
+    df.to_csv('data/pju/data/by_job_title.csv')
+    package.add_resource(Resource(path='data/pju/data/by_job_title.csv'))
 
     package.to_yaml('data/pju/datapackage.yaml')
