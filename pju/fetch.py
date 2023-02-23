@@ -12,11 +12,13 @@ http.headers['User-Agent'] = f'pju/{__version__}'
 
 
 def fetch_payouts() -> pd.DataFrame:
-    COLS = ['date', 'employees_by_hours', 'employees', 'employees_all', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'N', 'O'] 
+    COLS = ['date', 'employees_by_hours', 'employees', 'employees_all', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'N', 'O']
 
     df = pd.DataFrame()
     r = http.request('GET', f'{BASE_URL}/tipimesec.txt')
     df = pd.DataFrame(json.loads(r.data)['aaData'], columns=COLS)
+
+    df[['employees_by_hours', 'employees', 'employees_all', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'N', 'O']] = df[['employees_by_hours', 'employees', 'employees_all', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'N', 'O']].apply(lambda col: col.str.replace('.', '').astype(int))
 
     df['month_year'] = pd.to_datetime(df['date'], format='%m.%Y').dt.to_period('M')
     df.drop('date', axis=1, inplace=True)
