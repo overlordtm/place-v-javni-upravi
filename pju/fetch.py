@@ -65,6 +65,9 @@ def fetch_payouts_job_title(year: int, month: int) -> pd.DataFrame:
     r = http.request("GET",  f"{BASE_URL}/ISPAP_{year}/{month}_{year}/DM/DM_VSI_BRUTOPLACA{month}.txt")
 
     df = pd.DataFrame(json.loads(html.unescape(r.data.decode("iso-8859-2")))["aaData"], columns=COLS)
+
+    df[["employees", "gross_salary", "C", "D", "E", "F", "I", "J", "O"]] = df[["employees", "gross_salary", "C", "D", "E", "F", "I", "J", "O"]].apply(lambda col: col.str.replace(".", "", regex=False).astype(int))
+
     df.insert(0, "month_year", pd.to_datetime(f"{year}-{month}").to_period("M"))
     df.set_index("job_title_id", inplace=True)
     return df
