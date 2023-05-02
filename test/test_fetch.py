@@ -19,24 +19,31 @@ class TestFetch(unittest.TestCase):
 
 
     @vcr.use_cassette('test/fixtures/vcr_cassettes/test_fetch_payout_by_budget_user_group.yaml')
-    def xxx_test_fetch_payout_by_budget_user_group(self):
+    def test_fetch_payout_by_budget_user_group(self):
         df = pju.fetch.fetch_payout_by_budget_user_group(2018, 1)
         self.assertIsInstance(df, pd.DataFrame)
         self.assertEqual(len(df), 23)
 
-        for col in ['employees_by_hours', 'employees', 'employees_all', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'N', 'O']:
+        for col in ['employees', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'N', 'O']:
             self.assertTrue(is_integer_dtype(df[col]), f'{col} is not an integer dtype')
 
         print(df.head())
 
     @vcr.use_cassette('test/fixtures/vcr_cassettes/test_fetch_payout_by_budget_user.yaml')
     def test_fetch_payout_by_budget_user(self):
-        data = pju.fetch.fetch_payout_by_budget_user(2018, 1)
-        self.assertIsInstance(data, pd.DataFrame)
-        print(data.head())
+        df = pju.fetch.fetch_payout_by_budget_user(2018, 1)
+        self.assertIsInstance(df, pd.DataFrame)
+
+        # for col in ['employees', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'L', 'N', 'O']:
+        #     self.assertTrue(is_integer_dtype(df[col]), f'{col} is not an integer dtype')
+
+        print(df.head())
 
     @vcr.use_cassette('test/fixtures/vcr_cassettes/test_fetch_payouts_job_title.yaml')
     def test_fetch_payouts_job_title(self):
-        data = pju.fetch.fetch_payouts_job_title(2018, 1)
-        self.assertIsInstance(data, pd.DataFrame)
-        print(data.head())
+        df = pju.fetch.fetch_payouts_job_title(2018, 1)
+        self.assertIsInstance(df, pd.DataFrame)
+
+        for col in ['employees', 'C', 'D', 'E', 'F', 'I', 'J', 'O']:
+            self.assertTrue(is_integer_dtype(df[col]), f'{col} is not an integer dtype')
+        print(df.head())

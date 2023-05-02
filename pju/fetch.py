@@ -40,23 +40,52 @@ def fetch_payout_by_budget_user_group(year: int, month: int) -> pd.DataFrame:
     df.rename(columns={"Z360": "employees"}, inplace=True)
     df = df.apply(lambda col: col.str.replace(".", "", regex=False).astype(int), axis=1)
     df.insert(0, "month_year", pd.to_datetime(f"{year}-{month}").to_period("M"))
+    # df.set_index(["group_id", "month_year"], append=True, inplace=True)
 
     return df
 
 def fetch_payout_by_budget_user(year: int, month: int) -> pd.DataFrame:
-    COLS = ["group_id", "budget_user_id", "budget_user_name", "employees", "gross_salary", "NA1", "C", "NA2", "D", "NA3", "E", "NA4", "NA5","NA6", "I", "NA7", "J", "NA8", "O", "NA9"]
+
+    # from http://www.pportal.gov.si/media/js/as_statistikaPUtipi.js:82
+
+    #  aoColumns: [
+    # { 'sTitle': 'Podskupina', 'sClass': 'left', 'sWidth': 200 },
+    # { 'sTitle': 'Šifra PU', 'sClass': 'center', 'sWidth': 100 },
+    # { 'sTitle': 'Naziv PU', 'sClass': 'left', 'sWidth': 200 },
+    # { 'sType': 'slo', 'sTitle': 'Zaposlitve','sClass': 'right' },
+    # { 'sType': 'slo', 'sTitle': 'Bruto plača', 'sClass': 'right' },
+    # { 'sType': 'slo', 'sTitle': 'Povp. BP', 'sClass': 'right', 'bVisible': false},
+    # { 'sType': 'slo', 'sTitle': 'Tip C', 'sClass': 'right' },
+    # { 'sType': 'slo', 'sTitle': 'Povp. C', 'sClass': 'right', 'bVisible': false},
+    # { 'sType': 'slo', 'sTitle': 'Tip D', 'sClass': 'right' },
+    # { 'sType': 'slo', 'sTitle': 'Povp. D', 'sClass': 'right', 'bVisible': false},
+    # { 'sType': 'slo', 'sTitle': 'Tip E', 'sClass': 'right' },
+    # { 'sType': 'slo', 'sTitle': 'Povp. E', 'sClass': 'right', 'bVisible': false},
+    # { 'sType': 'slo', 'sTitle': 'Tip F', 'sClass': 'right', 'bVisible': false },
+    # { 'sType': 'slo', 'sTitle': 'Povp. F', 'sClass': 'right', 'bVisible': false},
+    # { 'sType': 'slo', 'sTitle': 'Tip I', 'sClass': 'right' },
+    # { 'sType': 'slo', 'sTitle': 'Povp. I', 'sClass': 'right', 'bVisible': false},
+    # { 'sType': 'slo', 'sTitle': 'Tip J', 'sClass': 'right' },
+    # { 'sType': 'slo', 'sTitle': 'Povp. J', 'sClass': 'right', 'bVisible': false},
+    # { 'sType': 'slo', 'sTitle': 'Tip O', 'sClass': 'right' },
+    # { 'sType': 'slo', 'sTitle': 'Povp. O', 'sClass': 'right', 'bVisible': false}
+    # ],
+
+    COLS = ["group_id", "budget_user_id", "budget_user_name", "employees", "gross_salary", "gross_salary_avg", "C", "C_avg", "D", "D_avg", "E", "E_avg", "F","F_avg", "I", "I_avg", "J", "J_avg", "O", "O_avg"]
     r = http.request("GET",  f"{BASE_URL}/ISPAP_{year}/{month}_{year}/PU/PU_POVPRECJE_{month}.txt")
 
     df = pd.DataFrame(json.loads(html.unescape(r.data.decode("iso-8859-2")))["aaData"], columns=COLS)
 
     df[["group_id", "group_name"]] = df["group_id"].str.split(" ", n=1, expand=True)
-    df["budget_user_id"] = df["budget_user_id"].str.strip().astype(int)
-    df["budget_user_name"] = df["budget_user_name"].str.strip().astype(str)
-    df["employees"] = df["employees"].str.replace(".", "", regex=False).astype(int)
-    df["gross_salary"] = df["gross_salary"].str.replace(".", "", regex=False).astype(int)
+    # df["budget_user_id"] = df["budget_user_id"].str.strip().astype(int)
+    # df["budget_user_name"] = df["budget_user_name"].str.strip().astype(str)
+    # df["employees"] = df["employees"].str.replace(".", "", regex=False).astype(int)
+    # df["gross_salary"] = df["gross_salary"].str.replace(".", "", regex=False).astype(int)
 
-    df.set_index("budget_user_id", inplace=True)
+    df[["employees", "gross_salary", "gross_salary_avg", "C", "C_avg", "D", "D_avg", "E", "E_avg", "F","F_avg", "I", "I_avg", "J", "J_avg", "O", "O_avg"]] = df[["employees", "gross_salary", "gross_salary_avg", "C", "C_avg", "D", "D_avg", "E", "E_avg", "F","F_avg", "I", "I_avg", "J", "J_avg", "O", "O_avg"]].apply(lambda col: col.str.replace(".", "", regex=False).astype(int))
+
     df.insert(0, "month_year", pd.to_datetime(f"{year}-{month}").to_period("M"))
+    df.set_index(["budget_user_id", "month_year"], inplace=True)
 
     return df
 
@@ -69,5 +98,5 @@ def fetch_payouts_job_title(year: int, month: int) -> pd.DataFrame:
     df[["employees", "gross_salary", "C", "D", "E", "F", "I", "J", "O"]] = df[["employees", "gross_salary", "C", "D", "E", "F", "I", "J", "O"]].apply(lambda col: col.str.replace(".", "", regex=False).astype(int))
 
     df.insert(0, "month_year", pd.to_datetime(f"{year}-{month}").to_period("M"))
-    df.set_index("job_title_id", inplace=True)
+    df.set_index(["job_title_id",  "month_year"], inplace=True)
     return df
