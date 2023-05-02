@@ -36,7 +36,8 @@ def fetch_payout_by_budget_user_group(year: int, month: int) -> pd.DataFrame:
 
     df = pd.DataFrame.from_records(data, index="POD")
     df.index = df.index.str.strip()
-    df.index.rename("group_id", inplace=True)
+    df.index.rename
+    ]=-65w("group_id", inplace=True)
     df.rename(columns={"Z360": "employees"}, inplace=True)
     df = df.apply(lambda col: col.str.replace(".", "", regex=False).astype(int), axis=1)
     df.insert(0, "month_year", pd.to_datetime(f"{year}-{month}").to_period("M"))

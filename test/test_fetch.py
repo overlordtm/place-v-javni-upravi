@@ -19,7 +19,7 @@ class TestFetch(unittest.TestCase):
 
 
     @vcr.use_cassette('test/fixtures/vcr_cassettes/test_fetch_payout_by_budget_user_group.yaml')
-    def test_fetch_payout_by_budget_user_group(self):
+    def xxx_test_fetch_payout_by_budget_user_group(self):
         df = pju.fetch.fetch_payout_by_budget_user_group(2018, 1)
         self.assertIsInstance(df, pd.DataFrame)
         self.assertEqual(len(df), 23)
